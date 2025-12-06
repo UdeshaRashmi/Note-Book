@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import axios from 'axios';
-import Login from './components/Login';
-import Register from './components/Register';
-import NotesList from './components/NotesList';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import NotesList from './pages/NotesList';
+import NoteForm from './pages/NoteForm';
 import Navbar from './components/Navbar';
 
 // Set base URL for API calls

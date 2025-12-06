@@ -12,7 +12,7 @@ const Navbar = ({ isAuthenticated, setAuth, user }) => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-olive-700 to-olive-800 shadow-xl">
+    <nav className="z-50 bg-gradient-to-r from-olive-700 to-olive-800 shadow-xl">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
