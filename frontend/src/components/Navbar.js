@@ -16,7 +16,7 @@ const Navbar = ({ isAuthenticated, setAuth, user }) => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
+          <Link to="/home" className="flex items-center space-x-3 group">
             <div className="bg-olive-100 p-2 rounded-full group-hover:bg-olive-200 transition-all duration-300">
               <BookOpen className="w-8 h-8 text-olive-800" />
             </div>
@@ -41,7 +41,7 @@ const Navbar = ({ isAuthenticated, setAuth, user }) => {
                 </div>
                 
                 <Link 
-                  to="/" 
+                  to="/home" 
                   className="flex items-center space-x-2 text-olive-100 hover:text-white px-4 py-2 rounded-lg hover:bg-olive-600/50 transition-all duration-300"
                 >
                   <Home className="w-5 h-5" />

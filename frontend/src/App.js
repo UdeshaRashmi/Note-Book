@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import axios from 'axios';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Home from './pages/Home';
 import NotesList from './pages/NotesList';
 import NoteForm from './pages/NoteForm';
 import Navbar from './components/Navbar';
@@ -67,6 +68,10 @@ function App() {
                 <Navigate to="/" />
               } 
             />
+            <Route
+              path="/home"
+              element={<Home />}
+            />
             <Route 
               path="/register" 
               element={
@@ -80,7 +85,7 @@ function App() {
               element={
                 isAuthenticated ? 
                 <NotesList user={user} /> : 
-                <Navigate to="/login" />
+                <Home />
               } 
             />
           </Routes>
