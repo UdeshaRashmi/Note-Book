@@ -74,8 +74,10 @@ const Register = ({ setAuth, fetchUser }) => {
       });
       
       localStorage.setItem('token', response.data.token);
-      await fetchUser();
-      navigate('/');
+      if (setAuth) setAuth(true);
+      navigate('/notes');
+      // fetch user in background; do not block the redirect
+      fetchUser().catch(() => {});
       
     } catch (err) {
       setError(err.response?.data?.msg || 'Registration failed. Please try again.');

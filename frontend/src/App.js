@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import axios from 'axios';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+
+// Pages
+import Home from './pages/Home';
+import About from './pages/About';
+import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 import NotesList from './pages/NotesList';
-import NoteForm from './pages/NoteForm';
-import Navbar from './components/Navbar';
+import NoteForm from './pages/NoteForm'; // If you have a separate NoteForm page
+ 
 
 // Set base URL for API calls
 axios.defaults.baseURL = 'http://localhost:5000/api';
@@ -41,13 +48,17 @@ function App() {
       const token = localStorage.getItem('token');
       if (token) {
         const response = await axios.get('/auth/user');
-        setUser(response.data);
+        const userData = response.data?.data || response.data?.user || response.data;
+        setUser(userData);
         setIsAuthenticated(true);
+        return true;
       }
     } catch (err) {
       localStorage.removeItem('token');
       setIsAuthenticated(false);
+      return false;
     }
+    return false;
   };
 
   useEffect(() => {
@@ -56,10 +67,15 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-olive-50 to-emerald-50">
+      <div className="min-h-screen flex flex-col">
         <Navbar isAuthenticated={isAuthenticated} setAuth={setAuth} user={user} />
-        <div className="container mx-auto px-4 py-8">
+        
+        <main className="flex-grow">
           <Routes>
+            {/* Public Routes */}
+            <Route path="/home" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
             <Route 
               path="/login" 
               element={
@@ -67,10 +83,6 @@ function App() {
                 <Login setAuth={setAuth} fetchUser={fetchUser} /> : 
                 <Navigate to="/" />
               } 
-            />
-            <Route
-              path="/home"
-              element={<Home />}
             />
             <Route 
               path="/register" 
@@ -80,16 +92,47 @@ function App() {
                 <Navigate to="/" />
               } 
             />
+            
+            {/* Private Routes */}
             <Route 
               path="/" 
               element={
                 isAuthenticated ? 
-                <NotesList user={user} /> : 
-                <Home />
+                <Dashboard user={user} /> : 
+                <Navigate to="/home" />
               } 
             />
+            <Route 
+              path="/notes" 
+              element={
+                isAuthenticated ? 
+                <NotesList user={user} /> : 
+                <Navigate to="/login" />
+              } 
+            />
+            <Route 
+              path="/add-note" 
+              element={
+                isAuthenticated ? 
+                <NoteForm user={user} /> : 
+                <Navigate to="/login" />
+              } 
+            />
+            <Route 
+              path="/edit-note/:id" 
+              element={
+                isAuthenticated ? 
+                <NoteForm user={user} /> : 
+                <Navigate to="/login" />
+              } 
+            />
+            
+            {/* Fallback Route */}
+            <Route path="*" element={<Navigate to="/home" />} />
           </Routes>
-        </div>
+        </main>
+        
+        <Footer />
       </div>
     </Router>
   );

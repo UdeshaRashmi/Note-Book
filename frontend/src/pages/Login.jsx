@@ -41,8 +41,11 @@ const Login = ({ setAuth, fetchUser }) => {
       });
       
       localStorage.setItem('token', response.data.token);
-      await fetchUser();
-      navigate('/');
+      // mark authenticated immediately and navigate — fetch user in background
+      if (setAuth) setAuth(true);
+      navigate('/notes');
+      // don't block navigation on user fetch; populate user when available
+      fetchUser().catch(() => {});
       
     } catch (err) {
       setError(err.response?.data?.msg || 'Invalid credentials. Please try again.');
