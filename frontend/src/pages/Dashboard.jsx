@@ -30,23 +30,30 @@ const Dashboard = ({ user }) => {
     archivedNotes: 0
   });
   const [recentNotes, setRecentNotes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
+      console.debug('[Dashboard] fetching stats and recent notes');
+
       // Fetch stats
       const statsResponse = await axios.get('/stats');
-      setStats(statsResponse.data.data.stats);
-      
+      console.debug('[Dashboard] stats response:', statsResponse);
+      const statsPayload = statsResponse.data?.data?.stats || statsResponse.data?.stats || statsResponse.data;
+      setStats(statsPayload || {});
+
       // Fetch recent notes
       const notesResponse = await axios.get('/notes?limit=5');
-      setRecentNotes(notesResponse.data.data.notes);
+      console.debug('[Dashboard] notes response:', notesResponse);
+      const notesPayload = notesResponse.data?.data?.notes || notesResponse.data?.notes || notesResponse.data;
+      setRecentNotes(notesPayload || []);
       
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load dashboard data');
+      console.error('[Dashboard] fetch error:', err?.response || err.message || err);
+      const serverMsg = err?.response?.data?.message || err?.response?.data?.msg || (err?.response?.data ? JSON.stringify(err.response.data) : null);
+      setError(serverMsg || 'Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -64,6 +71,17 @@ const Dashboard = ({ user }) => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-olive-600 mx-auto"></div>
           <p className="mt-4 text-olive-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user data hasn't arrived yet, show a lightweight message instead of a spinner
+  if (!user) {
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="text-center">
+          <p className="text-olive-600">Preparing your dashboard…</p>
         </div>
       </div>
     );

@@ -82,7 +82,7 @@ function App() {
       <div className="min-h-screen flex flex-col">
         <Navbar isAuthenticated={isAuthenticated} setAuth={setAuth} user={user} />
         
-        <main className="flex-grow">
+        <main className="flex-grow pt-20">
           <Routes>
             {/* Public Routes */}
             <Route path="/home" element={<Home />} />
@@ -112,6 +112,14 @@ function App() {
                 isAuthenticated ? 
                 <Dashboard user={user} /> : 
                 <Navigate to="/home" />
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                isAuthenticated ? 
+                <Dashboard user={user} /> : 
+                <Navigate to="/login" />
               } 
             />
             <Route 
