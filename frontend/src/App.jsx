@@ -24,8 +24,6 @@ axios.interceptors.request.use(
     const token = localStorage.getItem('token');
     if (token) {
       config.headers['x-auth-token'] = token;
-      // also set Authorization Bearer in case backend expects it
-      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
@@ -59,15 +57,8 @@ function App() {
       }
     } catch (err) {
       console.error('[fetchUser] error:', err?.response || err.message || err);
-      // Only clear auth if the server explicitly rejects the token (401).
-      const status = err?.response?.status;
-      if (status === 401) {
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
-        setUser(null);
-      }
-      // For other errors (network/server), keep the current auth state so we
-      // don't immediately redirect the user away from authenticated routes.
+      localStorage.removeItem('token');
+      setIsAuthenticated(false);
       return false;
     }
     return false;

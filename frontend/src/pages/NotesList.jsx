@@ -40,11 +40,15 @@ const NotesList = ({ user }) => {
     try {
       setLoading(true);
       const response = await axios.get('/notes');
-      setNotes(response.data.data.notes || []);
-      setFilteredNotes(response.data.data.notes || []);
+      console.debug('[fetchNotes] response:', response);
+      const notesPayload = response.data?.data?.notes || response.data?.notes || response.data;
+      setNotes(notesPayload || []);
+      setFilteredNotes(notesPayload || []);
       setError('');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch notes');
+      console.error('[fetchNotes] error:', err?.response || err.message || err);
+      const serverMsg = err?.response?.data?.message || err?.response?.data?.msg || (err?.response?.data ? JSON.stringify(err.response.data) : null);
+      setError(serverMsg || 'Failed to fetch notes');
     } finally {
       setLoading(false);
     }

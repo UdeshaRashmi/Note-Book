@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { Save, X, Edit2, Plus, Calendar, Type, FileText } from 'lucide-react';
 
-const NoteForm = ({ fetchNotes, currentNote, setCurrentNote }) => {
+const NoteForm = ({ fetchNotes = () => {}, currentNote = null, setCurrentNote = () => {}, onClose = null }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     content: ''
@@ -52,11 +54,22 @@ const NoteForm = ({ fetchNotes, currentNote, setCurrentNote }) => {
       }
 
       setFormData({ title: '', content: '' });
-      setCurrentNote(null);
-      fetchNotes();
+      // clear current note if parent provided a setter
+      try { setCurrentNote(null); } catch (e) {}
+      // refresh notes if callback provided
+      try { fetchNotes(); } catch (e) {}
+      // if used as modal, call onClose; otherwise navigate back to notes list
+      if (typeof onClose === 'function') {
+        onClose();
+      } else {
+        navigate('/notes');
+      }
       
     } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to save note');
+      console.error('[NoteForm] save error:', err?.response || err.message || err);
+      const serverMsg = err?.response?.data?.msg || err?.response?.data?.message ||
+        (err?.response?.data ? JSON.stringify(err.response.data) : null) || err.message;
+      setError(serverMsg || 'Failed to save note');
     } finally {
       setLoading(false);
     }

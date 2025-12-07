@@ -39,7 +39,7 @@ const Login = ({ setAuth, fetchUser }) => {
         email,
         password
       });
-      
+      console.debug('[login] response:', response);
       localStorage.setItem('token', response.data.token);
       // mark authenticated immediately and navigate — fetch user in background
       if (setAuth) setAuth(true);
@@ -48,6 +48,7 @@ const Login = ({ setAuth, fetchUser }) => {
       fetchUser().catch(() => {});
       
     } catch (err) {
+      console.error('[login] error:', err?.response || err.message || err);
       setError(err.response?.data?.msg || 'Invalid credentials. Please try again.');
     } finally {
       setLoading(false);

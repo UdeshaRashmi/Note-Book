@@ -72,7 +72,7 @@ const Register = ({ setAuth, fetchUser }) => {
         email,
         password
       });
-      
+      console.debug('[register] response:', response);
       localStorage.setItem('token', response.data.token);
       if (setAuth) setAuth(true);
       navigate('/notes');
@@ -80,6 +80,7 @@ const Register = ({ setAuth, fetchUser }) => {
       fetchUser().catch(() => {});
       
     } catch (err) {
+      console.error('[register] error:', err?.response || err.message || err);
       setError(err.response?.data?.msg || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
